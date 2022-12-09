@@ -1,5 +1,6 @@
 import express from "express";
 import { createProxyMiddleware }  from 'http-proxy-middleware';
+import {devices } from "./device";
 import config from "./config";
 import { ClientRequest, IncomingMessage } from "http";
 
@@ -17,7 +18,7 @@ function restore_header_names(req: IncomingMessage, proxyReq: ClientRequest)
 
 const ws = createProxyMiddleware({
     changeOrigin: true,
-    //router: devices.routing_table_ws(),
+    router: devices.routing_table_ws(),
     secure: false,
     ignorePath: true,
     ws: true,
@@ -26,19 +27,7 @@ const ws = createProxyMiddleware({
         {
             restore_header_names(req, proxyReq);
             proxyReq.socket!.pause();
-            /*get_user_permit(proxyReq).then((c) => {
-                if(!c.ok())
-                {
-                    proxyReq.destroy();
-                    return;
-                }               
-                kicker.add(socket, c);
-                proxyReq.socket!.resume();
-            }).catch((err) => {
-              proxyReq.socket?.destroy;
-              
-            });*/
-        
+            proxyReq.socket!.resume();
         },
     },
     ejectPlugins: true,
